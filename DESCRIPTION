@@ -21,6 +21,8 @@ Imports:
 Suggests:
     sp,
     ggplot2,
+    knitr,
+    rmarkdown,
     ExperimentHub,
     MerfishData
 Remotes:

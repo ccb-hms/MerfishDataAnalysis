@@ -25,7 +25,8 @@ query(eh, c("MerfishData", "ileum"))
 ```
 
 ```{r, message = FALSE}
-spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor")
+spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor",
+                                           use.images = FALSE)
 spe
 ```
 
