@@ -1,0 +1,27 @@
+Package: MerfishDataAnalysis
+Title: Applications and downstream analysis of MERFISH data
+Version: 0.99.0
+Authors@R: 
+    c(person("Ludwig", "Geistlinger",
+             role = c("aut", "cre"),
+             email = "ludwig_geistlinger@hms.harvard.edu"),
+      person("Tyrone", "Lee", role = "ctb"),
+      person("Jeffrey", "Mofitt", role = "aut"),
+      person("Robert", "Gentleman", role = "aut"))
+Description: Applications and downstream analysis of MERFISH data.
+Encoding: UTF-8
+License: Artistic-2.0
+VignetteBuilder: knitr
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Depends:
+    R (>= 4.2.0)
+Imports: 
+Suggests:
+    sp,
+    ggplot2,
+    ExperimentHub,
+    MerfishData
+Remotes:
+    ccb-hms/MerfishData

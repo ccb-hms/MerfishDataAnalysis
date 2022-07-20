@@ -1,0 +1,74 @@
+name: pkgdown
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+jobs:
+  job1:
+    runs-on: ubuntu-20.04
+    container: bioconductor/bioconductor_docker:devel
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+
+      # System dependencies
+      - name: Install apt dependencies
+        run: |
+          apt-get update
+          apt-get -y upgrade
+          apt-get -y install rsync  #for deploy 
+ 
+      - name: Query dependencies and update old packages
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
+        shell: Rscript {0}
+
+      - name: Cache R packages
+        if: runner.os == 'Linux'
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/lib/R/site-library
+          key: ${{ runner.os }}-r-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-r-1-
+
+      # This lets us augment with additional dependencies
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          Rscript -e "install.packages('pkgdown')"
+          Rscript -e "install.packages('BiocManager')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+
+      - name: Install dependencies
+        run: |
+          options(repos = BiocManager::repositories())
+          remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Check
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: |
+          rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "error", check_dir = "check")
+        shell: Rscript {0}
+
+
+      - name: Build pkgdown
+        run: |
+           PATH=$PATH:$HOME/bin/ Rscript -e 'pkgdown::build_site(".")'
+
+      - name: Deploy ð
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs # The folder the action should deploy.
+

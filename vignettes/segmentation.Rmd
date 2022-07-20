@@ -1,0 +1,32 @@
+---
+vignette: >
+  % \VignetteIndexEntry{MERFISH mouse ileum segmentation}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    mathjax: null   
+---
+
+# Setup
+
+```{r, message = FALSE}
+library(MerfishData)
+library(ExperimentHub)
+library(ggplot2)
+library(sp)
+```
+
+# Data retrieval
+
+```{r}
+eh <- ExperimentHub()
+query(eh, c("MerfishData", "ileum"))
+```
+
+```{r, message = FALSE}
+spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor")
+spe
+```
+
+

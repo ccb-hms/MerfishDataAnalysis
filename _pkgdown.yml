@@ -1,0 +1,20 @@
+title: "MerfishDataAnalysis"
+
+url: https://ccb-hms.github.io/MerfishDataAnalysis/
+
+template:
+  params:
+    bootswatch: flatly
+
+navbar:
+  title: ~
+  type: default
+  left:
+    - text: Vignettes
+      menu:
+      - text: MERFISH mouse ileum segmentation
+        href: articles/segmentation.html
+      
+  right:
+    - icon: fa-github
+      href: https://github.com/ccb-hms/MerfishDataAnalysis
