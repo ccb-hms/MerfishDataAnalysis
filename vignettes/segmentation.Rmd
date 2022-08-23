@@ -1,4 +1,5 @@
 ---
+title: MERFISH mouse ileum segmentation
 vignette: >
   % \VignetteIndexEntry{MERFISH mouse ileum segmentation}
   % \VignetteEngine{knitr::rmarkdown}
@@ -19,15 +20,163 @@ library(sp)
 
 # Data retrieval
 
-```{r}
+```{r ehub}
 eh <- ExperimentHub()
 query(eh, c("MerfishData", "ileum"))
 ```
 
-```{r, message = FALSE}
+```{r spe-ileum, message = FALSE}
 spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor",
                                            use.images = FALSE)
 spe
 ```
 
+# Polygon segmentation borders
 
+Here, we inspect the polygon segmentation borders obtained from the Baysor
+segmentation:  
+
+```{r poly}
+poly <- metadata(spe)$polygons
+head(poly)
+```
+
+We first check how many cells / polygons do we have for each z-layer:
+
+```{r poly-per-z}
+spl <- split(poly[,"cell"], poly[,"z"])
+spl <- lapply(spl, unique)
+lengths(spl)
+```
+
+That means we have 3866 cells in the first z-plane.
+
+Question: how to relate the polygons to the 5,800 cells that we have in the
+segmentation counts matrix? 
+
+Answer: we can use functionality from the 
+[sp](https://cran.r-project.org/web/packages/sp/index.html)
+package for assigning cell centroids to polygons they are spatially contained in. 
+
+This can be done using either the `point.in.polygon` function.
+For example, we identify here cell centroid coordinates that overlap with
+the first polygon of the first z-plane:
+
+```{r point-in-poly}
+poly1 <- poly[poly[,"cell"] == 1 & poly[,"z"] == 1, c("x", "y")]
+res <- sp::point.in.polygon(spatialCoords(spe)[,"x"],
+                            spatialCoords(spe)[,"y"],
+                            poly1[,"x"],
+                            poly1[,"y"])
+head(res)
+table(res)
+```
+
+This means that the first cell in the assay corresponds to the first polygon in
+the first z-layer.
+
+Or we can use the `over` function, which allows to more easily iterate over multiple
+polygons.
+For example, we identify here cell centroid coordinates that overlap with
+the first two polygons of the first z-plane:
+
+```{r}
+pts <- sp::SpatialPoints(spatialCoords(spe))
+p1 <- sp::Polygon(poly1[,c("x", "y")])
+poly2 <- poly[poly[,"cell"] == 2 & poly[,"z"] == 1, c("x", "y")]
+p2 <- sp::Polygon(poly2[,c("x", "y")])
+pol <- sp::SpatialPolygons(list(sp::Polygons(list(p1), ID = "1"),
+                                sp::Polygons(list(p2), ID = "2")))
+```
+
+```{r points-over-polys}
+res <- sp::over(pts, pol)
+head(res)
+table(res)
+resl <- sp::over(pts, pol, returnList = TRUE)
+head(resl)
+```
+
+This means that the first two cell in the assay corresponds to the first two polygons
+in the first z-layer.
+
+Ok, so now let's do this for all cell centroids of the Baysor segmentation to
+find the associated polygons:
+
+```{r all-points-over-polys}
+zspl <- split(data.frame(poly[,c("cell", "x", "y")]), poly[,"z"])
+cellspl <- lapply(zspl, function(s) split(s[,c("x", "y")], s[,"cell"]))
+spl <- do.call(c, cellspl)
+```
+
+We define a little helper function for creating polygon objects:
+
+```{r create-poly}
+.createPolygon <- function(i)
+{
+    p <- sp::Polygon(spl[[i]])
+    p <- sp::Polygons(list(p), ID = as.character(i))
+    return(p)
+}
+```
+
+```{r create-all-polys}
+pz <- lapply(seq_along(spl), .createPolygon)
+pz <- sp::SpatialPolygons(pz)
+res <- sp::over(pts, pz)
+head(res)
+resl <- sp::over(pts, pz, returnList = TRUE)
+head(resl)
+table(lengths(resl))
+```
+
+That means that we have 8 cells in the segmentation matrix without overlapping
+polygons, and, on the other hand, 3 cells with up to 11 overlapping polygons.
+
+As there is thus indeed no 1:1 mapping, and given that the Baysor segmentation
+results are 2D, we could eg. just take the first polygon for each cell,
+irrespective of the z-layer:
+
+```{r first-poly-per-cell}
+poly.per.cell <- vapply(resl, `[`, integer(1), x = 1)
+head(poly.per.cell)
+```
+
+# Convex hull segmentation borders 
+
+Alternatively, we can compute and visualize simple convex hulls instead:
+
+```{r }
+x <- BumpyMatrix::unsplitAsDataFrame(assay(spe, "molecules"))
+x$column <- as.integer(x$column)
+x
+```
+
+Using `base::chull`, this computes convex hulls for
+5,800 cells and around 820k molecules in less than a second:
+
+```{r}
+cl <- split(data.frame(x[,c("x", "y")]), x$column)
+length(cl[[1]])
+system.time( clh <- lapply(cl, chull) )
+clh[[1]]
+length(clh[[1]])
+length(clh)
+```
+
+Create data frame for plotting:
+
+```{r}
+cl.sub <- cl
+for(i in seq_along(clh)) cl.sub[[i]] <- cl.sub[[i]][clh[[i]],]
+clc <- do.call(rbind, cl.sub)
+clc$cell <- rep(names(cl.sub), lengths(clh))
+```
+
+```{r, fig.height = 8}
+clc$leiden <- spe$leiden_final[as.integer(clc$cell)]
+p <- ggplot() + geom_polygon(data = clc,
+                        aes(x = x, y = y, group = cell, color = leiden),
+                        fill = NA)
+p + theme_bw()
+```

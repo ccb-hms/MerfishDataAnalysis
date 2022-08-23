@@ -6,7 +6,7 @@ Authors@R:
              role = c("aut", "cre"),
              email = "ludwig_geistlinger@hms.harvard.edu"),
       person("Tyrone", "Lee", role = "ctb"),
-      person("Jeffrey", "Mofitt", role = "aut"),
+      person("Jeffrey", "Moffitt", role = "aut"),
       person("Robert", "Gentleman", role = "aut"))
 Description: Applications and downstream analysis of MERFISH data.
 Encoding: UTF-8
@@ -23,6 +23,7 @@ Suggests:
     ggplot2,
     knitr,
     rmarkdown,
+    BumpyMatrix,
     ExperimentHub,
     MerfishData
 Remotes:
