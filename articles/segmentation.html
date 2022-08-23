@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> • MerfishDataAnalysis</title>
+<title>MERFISH mouse ileum segmentation • MerfishDataAnalysis</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="">
+<script src="../pkgdown.js"></script><meta property="og:title" content="MERFISH mouse ileum segmentation">
 <meta property="og:description" content="MerfishDataAnalysis">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -72,7 +72,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip></h1>
+      <h1 data-toc-skip>MERFISH mouse ileum segmentation</h1>
             
       
       
@@ -86,56 +86,260 @@
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/" class="external-link">sp</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/" class="external-link">sp</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-retrieval">Data retrieval<a class="anchor" aria-label="anchor" href="#data-retrieval"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## snapshotDate(): 2022-07-15</span></code></pre>
+<code class="sourceCode R"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## snapshotDate(): 2022-08-23</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MerfishData"</span>, <span class="st">"ileum"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## ExperimentHub with 9 records</span>
-<span class="co">## # snapshotDate(): 2022-07-15</span>
-<span class="co">## # $dataprovider: Boston Children's Hospital</span>
-<span class="co">## # $species: Mus musculus</span>
-<span class="co">## # $rdataclass: data.frame, matrix, EBImage</span>
-<span class="co">## # additional mcols(): taxonomyid, genome, description,</span>
-<span class="co">## #   coordinate_1_based, maintainer, rdatadateadded, preparerclass, tags,</span>
-<span class="co">## #   rdatapath, sourceurl, sourcetype </span>
-<span class="co">## # retrieve records with, e.g., 'object[["EH7543"]]' </span>
-<span class="co">## </span>
-<span class="co">##            title                                 </span>
-<span class="co">##   EH7543 | Petukhov2021_ileum_molecules          </span>
-<span class="co">##   EH7544 | Petukhov2021_ileum_dapi               </span>
-<span class="co">##   EH7545 | Petukhov2021_ileum_membrane           </span>
-<span class="co">##   EH7547 | Petukhov2021_ileum_baysor_segmentation</span>
-<span class="co">##   EH7548 | Petukhov2021_ileum_baysor_counts      </span>
-<span class="co">##   EH7549 | Petukhov2021_ileum_baysor_coldata     </span>
-<span class="co">##   EH7550 | Petukhov2021_ileum_baysor_polygons    </span>
-<span class="co">##   EH7551 | Petukhov2021_ileum_cellpose_counts    </span>
-<span class="co">##   EH7552 | Petukhov2021_ileum_cellpose_coldata</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MerfishData"</span>, <span class="st">"ileum"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## ExperimentHub with 9 records</span></span>
+<span><span class="co">## # snapshotDate(): 2022-08-23</span></span>
+<span><span class="co">## # $dataprovider: Boston Children's Hospital</span></span>
+<span><span class="co">## # $species: Mus musculus</span></span>
+<span><span class="co">## # $rdataclass: data.frame, matrix, EBImage</span></span>
+<span><span class="co">## # additional mcols(): taxonomyid, genome, description,</span></span>
+<span><span class="co">## #   coordinate_1_based, maintainer, rdatadateadded, preparerclass, tags,</span></span>
+<span><span class="co">## #   rdatapath, sourceurl, sourcetype </span></span>
+<span><span class="co">## # retrieve records with, e.g., 'object[["EH7543"]]' </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##            title                                 </span></span>
+<span><span class="co">##   EH7543 | Petukhov2021_ileum_molecules          </span></span>
+<span><span class="co">##   EH7544 | Petukhov2021_ileum_dapi               </span></span>
+<span><span class="co">##   EH7545 | Petukhov2021_ileum_membrane           </span></span>
+<span><span class="co">##   EH7547 | Petukhov2021_ileum_baysor_segmentation</span></span>
+<span><span class="co">##   EH7548 | Petukhov2021_ileum_baysor_counts      </span></span>
+<span><span class="co">##   EH7549 | Petukhov2021_ileum_baysor_coldata     </span></span>
+<span><span class="co">##   EH7550 | Petukhov2021_ileum_baysor_polygons    </span></span>
+<span><span class="co">##   EH7551 | Petukhov2021_ileum_cellpose_counts    </span></span>
+<span><span class="co">##   EH7552 | Petukhov2021_ileum_cellpose_coldata</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">MerfishData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MerfishData/man/MouseIleumPetukhov2021.html" class="external-link">MouseIleumPetukhov2021</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="st">"baysor"</span>,
-                                           use.images <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">spe</span></code></pre></div>
-<pre><code><span class="co">## class: SpatialExperiment </span>
-<span class="co">## dim: 241 5800 </span>
-<span class="co">## metadata(1): polygons</span>
-<span class="co">## assays(2): counts molecules</span>
-<span class="co">## rownames(241): Acsl1 Acta2 ... Vcan Vim</span>
-<span class="co">## rowData names(0):</span>
-<span class="co">## colnames: NULL</span>
-<span class="co">## colData names(7): n_transcripts density ... leiden_final sample_id</span>
-<span class="co">## reducedDimNames(0):</span>
-<span class="co">## mainExpName: NULL</span>
-<span class="co">## altExpNames(0):</span>
-<span class="co">## spatialCoords names(2) : x y</span>
-<span class="co">## imgData names(0):</span></code></pre>
+<code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">MerfishData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MerfishData/man/MouseIleumPetukhov2021.html" class="external-link">MouseIleumPetukhov2021</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="st">"baysor"</span>,</span>
+<span>                                           use.images <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">spe</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SpatialExperiment </span></span>
+<span><span class="co">## dim: 241 5800 </span></span>
+<span><span class="co">## metadata(1): polygons</span></span>
+<span><span class="co">## assays(2): counts molecules</span></span>
+<span><span class="co">## rownames(241): Acsl1 Acta2 ... Vcan Vim</span></span>
+<span><span class="co">## rowData names(0):</span></span>
+<span><span class="co">## colnames: NULL</span></span>
+<span><span class="co">## colData names(7): n_transcripts density ... leiden_final sample_id</span></span>
+<span><span class="co">## reducedDimNames(0):</span></span>
+<span><span class="co">## mainExpName: NULL</span></span>
+<span><span class="co">## altExpNames(0):</span></span>
+<span><span class="co">## spatialCoords names(2) : x y</span></span>
+<span><span class="co">## imgData names(0):</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="polygon-segmentation-borders">Polygon segmentation borders<a class="anchor" aria-label="anchor" href="#polygon-segmentation-borders"></a>
+</h2>
+<p>Here, we inspect the polygon segmentation borders obtained from the
+Baysor segmentation:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">$</span><span class="va">polygons</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">poly</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##      z cell    x  y</span></span>
+<span><span class="co">## [1,] 1    1 2053 51</span></span>
+<span><span class="co">## [2,] 1    1 2053 54</span></span>
+<span><span class="co">## [3,] 1    1 2053 57</span></span>
+<span><span class="co">## [4,] 1    1 2056 57</span></span>
+<span><span class="co">## [5,] 1    1 2059 57</span></span>
+<span><span class="co">## [6,] 1    1 2059 54</span></span></code></pre>
+<p>We first check how many cells / polygons do we have for each
+z-layer:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">poly</span><span class="op">[</span>,<span class="st">"cell"</span><span class="op">]</span>, <span class="va">poly</span><span class="op">[</span>,<span class="st">"z"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">spl</span>, <span class="va">unique</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    1    2    3    4    5    6    7    8    9 </span></span>
+<span><span class="co">## 3866 4095 4351 4512 4426 4085 3467 2806 2253</span></span></code></pre>
+<p>That means we have 3866 cells in the first z-plane.</p>
+<p>Question: how to relate the polygons to the 5,800 cells that we have
+in the segmentation counts matrix?</p>
+<p>Answer: we can use functionality from the <a href="https://cran.r-project.org/web/packages/sp/index.html" class="external-link">sp</a>
+package for assigning cell centroids to polygons they are spatially
+contained in.</p>
+<p>This can be done using either the <code>point.in.polygon</code>
+function. For example, we identify here cell centroid coordinates that
+overlap with the first polygon of the first z-plane:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">poly1</span> <span class="op">&lt;-</span> <span class="va">poly</span><span class="op">[</span><span class="va">poly</span><span class="op">[</span>,<span class="st">"cell"</span><span class="op">]</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">poly</span><span class="op">[</span>,<span class="st">"z"</span><span class="op">]</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/point.in.polygon.html" class="external-link">point.in.polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">[</span>,<span class="st">"x"</span><span class="op">]</span>,</span>
+<span>                            <span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">[</span>,<span class="st">"y"</span><span class="op">]</span>,</span>
+<span>                            <span class="va">poly1</span><span class="op">[</span>,<span class="st">"x"</span><span class="op">]</span>,</span>
+<span>                            <span class="va">poly1</span><span class="op">[</span>,<span class="st">"y"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 1 0 0 0 0 0</span></span></code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## res</span></span>
+<span><span class="co">##    0    1 </span></span>
+<span><span class="co">## 5799    1</span></span></code></pre>
+<p>This means that the first cell in the assay corresponds to the first
+polygon in the first z-layer.</p>
+<p>Or we can use the <code>over</code> function, which allows to more
+easily iterate over multiple polygons. For example, we identify here
+cell centroid coordinates that overlap with the first two polygons of
+the first z-plane:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygon</a></span><span class="op">(</span><span class="va">poly1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">poly2</span> <span class="op">&lt;-</span> <span class="va">poly</span><span class="op">[</span><span class="va">poly</span><span class="op">[</span>,<span class="st">"cell"</span><span class="op">]</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">&amp;</span> <span class="va">poly</span><span class="op">[</span>,<span class="st">"z"</span><span class="op">]</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygon</a></span><span class="op">(</span><span class="va">poly2</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">pol</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">SpatialPolygons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span>, ID <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span>,</span>
+<span>                                <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p2</span><span class="op">)</span>, ID <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/over.html" class="external-link">over</a></span><span class="op">(</span><span class="va">pts</span>, <span class="va">pol</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  1  2  3  4  5  6 </span></span>
+<span><span class="co">##  1  2 NA NA NA NA</span></span></code></pre>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## res</span></span>
+<span><span class="co">## 1 2 </span></span>
+<span><span class="co">## 1 1</span></span></code></pre>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resl</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/over.html" class="external-link">over</a></span><span class="op">(</span><span class="va">pts</span>, <span class="va">pol</span>, returnList <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resl</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $`1`</span></span>
+<span><span class="co">## [1] 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`2`</span></span>
+<span><span class="co">## [1] 2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`3`</span></span>
+<span><span class="co">## integer(0)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`4`</span></span>
+<span><span class="co">## integer(0)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`5`</span></span>
+<span><span class="co">## integer(0)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`6`</span></span>
+<span><span class="co">## integer(0)</span></span></code></pre>
+<p>This means that the first two cell in the assay corresponds to the
+first two polygons in the first z-layer.</p>
+<p>Ok, so now let’s do this for all cell centroids of the Baysor
+segmentation to find the associated polygons:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zspl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">poly</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span>, <span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="va">poly</span><span class="op">[</span>,<span class="st">"z"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">cellspl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">zspl</span>, <span class="kw">function</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">s</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span>, <span class="va">s</span><span class="op">[</span>,<span class="st">"cell"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">c</span>, <span class="va">cellspl</span><span class="op">)</span></span></code></pre></div>
+<p>We define a little helper function for creating polygon objects:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">.createPolygon</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygon</a></span><span class="op">(</span><span class="va">spl</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">Polygons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span>, <span class="va">.createPolygon</span><span class="op">)</span></span>
+<span><span class="va">pz</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPolygons.html" class="external-link">SpatialPolygons</a></span><span class="op">(</span><span class="va">pz</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/over.html" class="external-link">over</a></span><span class="op">(</span><span class="va">pts</span>, <span class="va">pz</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     1     2     3     4     5     6 </span></span>
+<span><span class="co">## 25337 25336 28803 21255 25339 25340</span></span></code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resl</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/over.html" class="external-link">over</a></span><span class="op">(</span><span class="va">pts</span>, <span class="va">pz</span>, returnList <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resl</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $`1`</span></span>
+<span><span class="co">## [1]     1  3867  7962 12313 16825 21251 25337</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`2`</span></span>
+<span><span class="co">## [1]     2  3868  7963 12314 16826 21252 25336</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`3`</span></span>
+<span><span class="co">## [1]     4  3869  7964 12315 16827 21254 25337 28803</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`4`</span></span>
+<span><span class="co">## [1]     5  3870  7965 12316 16829 21255</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`5`</span></span>
+<span><span class="co">## [1]     6  3871  7966 12317 16830 21256 25339</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`6`</span></span>
+<span><span class="co">## [1]     7  3872  7967 12319 16831 21258 25340</span></span></code></pre>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">resl</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">##    0    1    2    3    4    5    6    7    8    9   10   11 </span></span>
+<span><span class="co">##    8   22   46  114  224  335  623  858 1284 2277    6    3</span></span></code></pre>
+<p>That means that we have 8 cells in the segmentation matrix without
+overlapping polygons, and, on the other hand, 3 cells with up to 11
+overlapping polygons.</p>
+<p>As there is thus indeed no 1:1 mapping, and given that the Baysor
+segmentation results are 2D, we could eg. just take the first polygon
+for each cell, irrespective of the z-layer:</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">poly.per.cell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">resl</span>, <span class="va">`[`</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, x <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">poly.per.cell</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 1 2 3 4 5 6 </span></span>
+<span><span class="co">## 1 2 4 5 6 7</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="convex-hull-segmentation-borders">Convex hull segmentation borders<a class="anchor" aria-label="anchor" href="#convex-hull-segmentation-borders"></a>
+</h2>
+<p>Alternatively, we can compute and visualize simple convex hulls
+instead:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">BumpyMatrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BumpyMatrix/man/unsplitAsDataFrame.html" class="external-link">unsplitAsDataFrame</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">spe</span>, <span class="st">"molecules"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x</span><span class="op">$</span><span class="va">column</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">column</span><span class="op">)</span></span>
+<span><span class="va">x</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 797493 rows and 5 columns</span></span>
+<span><span class="co">##                row    column         x         y         z</span></span>
+<span><span class="co">##        &lt;character&gt; &lt;integer&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1           Adgrf5         1      2090        15    0.0000</span></span>
+<span><span class="co">## 2            Adrb1         1      2091        20   13.7682</span></span>
+<span><span class="co">## 3            Cadm1         1      2063         6   41.3046</span></span>
+<span><span class="co">## 4            Cadm1         1      2063        29   68.8410</span></span>
+<span><span class="co">## 5             Cd14         1      2067        36   13.7682</span></span>
+<span><span class="co">## ...            ...       ...       ...       ...       ...</span></span>
+<span><span class="co">## 797489       Itgae      5799      4764      9308   13.7682</span></span>
+<span><span class="co">## 797490      Clca3b      5800      5226      8766    0.0000</span></span>
+<span><span class="co">## 797491        Cps1      5800      5228      8797    0.0000</span></span>
+<span><span class="co">## 797492        Cps1      5800      5229      8784    0.0000</span></span>
+<span><span class="co">## 797493        Cps1      5800      5222      8787   13.7682</span></span></code></pre>
+<p>Using <code>base::chull</code>, this computes convex hulls for 5,800
+cells and around 820k molecules in less than a second:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="va">x</span><span class="op">$</span><span class="va">column</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cl</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 2</span></span></code></pre>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span> <span class="va">clh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">cl</span>, <span class="va">chull</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    user  system elapsed </span></span>
+<span><span class="co">##   1.696   0.004   1.700</span></span></code></pre>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">clh</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] 18 34 17 26 20 29 28 19  8 31  5</span></span></code></pre>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clh</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 11</span></span></code></pre>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clh</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 5800</span></span></code></pre>
+<p>Create data frame for plotting:</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cl.sub</span> <span class="op">&lt;-</span> <span class="va">cl</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">clh</span><span class="op">)</span><span class="op">)</span> <span class="va">cl.sub</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">cl.sub</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">clh</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,<span class="op">]</span></span>
+<span><span class="va">clc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">cl.sub</span><span class="op">)</span></span>
+<span><span class="va">clc</span><span class="op">$</span><span class="va">cell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cl.sub</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="va">clh</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">clc</span><span class="op">$</span><span class="va">leiden</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">clc</span><span class="op">$</span><span class="va">cell</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_polygon.html" class="external-link">geom_polygon</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">clc</span>,</span>
+<span>                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, group <span class="op">=</span> <span class="va">cell</span>, color <span class="op">=</span> <span class="va">leiden</span><span class="op">)</span>,</span>
+<span>                        fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="segmentation_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
   </div>
 
@@ -151,12 +355,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Ludwig Geistlinger, Jeffrey Mofitt, Robert Gentleman.</p>
+<p>Developed by Ludwig Geistlinger, Jeffrey Moffitt, Robert Gentleman.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
