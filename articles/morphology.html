@@ -92,24 +92,18 @@
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: multiple methods tables found for 'aperm'</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'BiocGenerics::aperm' by</span></span>
-<span><span class="co">## 'DelayedArray::aperm' when loading 'SummarizedExperiment'</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'BiocGenerics::aperm' by</span></span>
-<span><span class="co">## 'DelayedArray::aperm' when loading 'HDF5Array'</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape" class="external-link">reshape2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-retrieval">Data retrieval<a class="anchor" aria-label="anchor" href="#data-retrieval"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## snapshotDate(): 2022-08-23</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MerfishData"</span>, <span class="st">"ileum"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ExperimentHub with 9 records</span></span>
 <span><span class="co">## # snapshotDate(): 2022-08-23</span></span>
@@ -131,7 +125,7 @@
 <span><span class="co">##   EH7550 | Petukhov2021_ileum_baysor_polygons    </span></span>
 <span><span class="co">##   EH7551 | Petukhov2021_ileum_cellpose_counts    </span></span>
 <span><span class="co">##   EH7552 | Petukhov2021_ileum_cellpose_coldata</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">MerfishData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MerfishData/man/MouseIleumPetukhov2021.html" class="external-link">MouseIleumPetukhov2021</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="st">"baysor"</span>,</span>
 <span>                                           use.images <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                           use.polygons <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -151,7 +145,7 @@
 <span><span class="co">## imgData names(0):</span></span></code></pre>
 <p>Here, we inspect the available basic morphological features from the
 Baysor segmentation:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">colData</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 5800 rows and 7 columns</span></span>
 <span><span class="co">##      n_transcripts   density elongation      area avg_confidence  leiden_final</span></span>
@@ -186,13 +180,13 @@ Baysor segmentation:</p>
 </h2>
 <p>We stratify the available cell features by cell type, starting with
 the number of transcripts expressed in each cell:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">n_transcripts</span>, <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_transcripts"</span>, <span class="st">"leiden_final"</span><span class="op">)</span></span></code></pre></div>
 <p>We then plot the distribution of number of transcripts by cell
 type:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html" class="external-link">ggboxplot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"leiden_final"</span>, y <span class="op">=</span> <span class="st">"n_transcripts"</span>,</span>
 <span>                        fill <span class="op">=</span> <span class="st">"leiden_final"</span>, ggtheme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                        palette <span class="op">=</span> <span class="st">"ucscgb"</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
@@ -201,7 +195,7 @@ type:</p>
 <p>From this plot it is apparent that, for example, T (CD8+) cells
 express more transcripts than T (CD4+) cells, which we can corroborate
 with a simple t-test:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span><span class="va">spl</span><span class="op">[[</span><span class="st">"T (CD8+)"</span><span class="op">]</span><span class="op">]</span>, <span class="va">spl</span><span class="op">[[</span><span class="st">"T (CD4+)"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Welch Two Sample t-test</span></span>
@@ -215,26 +209,26 @@ with a simple t-test:</p>
 <span><span class="co">## mean of x mean of y </span></span>
 <span><span class="co">## 175.72800  56.19289</span></span></code></pre>
 <p>(This is overdispersed count data though):</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">spl</span><span class="op">[[</span><span class="st">"T (CD8+)"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 175.728</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">var</span><span class="op">(</span><span class="va">spl</span><span class="op">[[</span><span class="st">"T (CD8+)"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 12390.51</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">spl</span><span class="op">[[</span><span class="st">"T (CD8+)"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 125</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="density">Density<a class="anchor" aria-label="anchor" href="#density"></a>
 </h2>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">density</span>, <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"density"</span>, <span class="st">"leiden_final"</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">leiden_final</span> <span class="op">!=</span> <span class="st">"Removed"</span><span class="op">)</span></span></code></pre></div>
 <p>We then plot the distribution of by cell type:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html" class="external-link">ggboxplot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"leiden_final"</span>, y <span class="op">=</span> <span class="st">"density"</span>,</span>
 <span>                        fill <span class="op">=</span> <span class="st">"leiden_final"</span>, ggtheme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                        palette <span class="op">=</span> <span class="st">"ucscgb"</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
@@ -244,13 +238,13 @@ with a simple t-test:</p>
 <div class="section level2">
 <h2 id="elongation">Elongation<a class="anchor" aria-label="anchor" href="#elongation"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">elongation</span>, <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elongation"</span>, <span class="st">"leiden_final"</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">leiden_final</span> <span class="op">!=</span> <span class="st">"Removed"</span><span class="op">)</span></span></code></pre></div>
 <p>We then plot the distribution of by cell type:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html" class="external-link">ggboxplot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"leiden_final"</span>, y <span class="op">=</span> <span class="st">"elongation"</span>,</span>
 <span>                        fill <span class="op">=</span> <span class="st">"leiden_final"</span>, ggtheme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                        palette <span class="op">=</span> <span class="st">"ucscgb"</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
@@ -260,13 +254,13 @@ with a simple t-test:</p>
 <div class="section level2">
 <h2 id="area">Area<a class="anchor" aria-label="anchor" href="#area"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">area</span>, <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"area"</span>, <span class="st">"leiden_final"</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">leiden_final</span> <span class="op">!=</span> <span class="st">"Removed"</span><span class="op">)</span></span></code></pre></div>
 <p>We then plot the distribution of by cell type:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html" class="external-link">ggboxplot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"leiden_final"</span>, y <span class="op">=</span> <span class="st">"area"</span>,</span>
 <span>                        fill <span class="op">=</span> <span class="st">"leiden_final"</span>, ggtheme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                        palette <span class="op">=</span> <span class="st">"ucscgb"</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
@@ -276,13 +270,13 @@ with a simple t-test:</p>
 <div class="section level2">
 <h2 id="confidence">Confidence<a class="anchor" aria-label="anchor" href="#confidence"></a>
 </h2>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spe</span><span class="op">$</span><span class="va">avg_confidence</span>, <span class="va">spe</span><span class="op">$</span><span class="va">leiden_final</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">melt</a></span><span class="op">(</span><span class="va">spl</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"avg_confidence"</span>, <span class="st">"leiden_final"</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">leiden_final</span> <span class="op">!=</span> <span class="st">"Removed"</span><span class="op">)</span></span></code></pre></div>
 <p>We then plot the distribution of by cell type:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggboxplot.html" class="external-link">ggboxplot</a></span><span class="op">(</span><span class="va">df</span>, x <span class="op">=</span> <span class="st">"leiden_final"</span>, y <span class="op">=</span> <span class="st">"avg_confidence"</span>,</span>
 <span>                        fill <span class="op">=</span> <span class="st">"leiden_final"</span>, ggtheme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                        palette <span class="op">=</span> <span class="st">"ucscgb"</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>

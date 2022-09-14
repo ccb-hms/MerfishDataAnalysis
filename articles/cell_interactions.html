@@ -92,22 +92,16 @@
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: multiple methods tables found for 'aperm'</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'BiocGenerics::aperm' by</span></span>
-<span><span class="co">## 'DelayedArray::aperm' when loading 'SummarizedExperiment'</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'BiocGenerics::aperm' by</span></span>
-<span><span class="co">## 'DelayedArray::aperm' when loading 'HDF5Array'</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-retrieval">Data retrieval<a class="anchor" aria-label="anchor" href="#data-retrieval"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## snapshotDate(): 2022-08-23</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MerfishData"</span>, <span class="st">"ileum"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ExperimentHub with 9 records</span></span>
 <span><span class="co">## # snapshotDate(): 2022-08-23</span></span>
@@ -129,7 +123,7 @@
 <span><span class="co">##   EH7550 | Petukhov2021_ileum_baysor_polygons    </span></span>
 <span><span class="co">##   EH7551 | Petukhov2021_ileum_cellpose_counts    </span></span>
 <span><span class="co">##   EH7552 | Petukhov2021_ileum_cellpose_coldata</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">MerfishData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MerfishData/man/MouseIleumPetukhov2021.html" class="external-link">MouseIleumPetukhov2021</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="st">"baysor"</span>,</span>
 <span>                                           use.images <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                           use.polygons <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
