@@ -11,7 +11,7 @@ output:
 
 # Setup
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning = FALSE}
 library(MerfishData)
 library(ExperimentHub)
 library(ggpubr)
