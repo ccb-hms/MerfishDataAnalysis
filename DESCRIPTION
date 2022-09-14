@@ -21,7 +21,9 @@ Imports:
 Suggests:
     sp,
     ggplot2,
+    ggpubr,
     knitr,
+    reshape2,
     rmarkdown,
     BumpyMatrix,
     ExperimentHub,

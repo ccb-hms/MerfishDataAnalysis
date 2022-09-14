@@ -1,0 +1,147 @@
+---
+title: Mouse ileum morphological features
+vignette: >
+  % \VignetteIndexEntry{Mouse ileum morphological features}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    mathjax: null   
+---
+
+# Setup
+
+```{r, message = FALSE}
+library(MerfishData)
+library(ExperimentHub)
+library(ggpubr)
+library(reshape2)
+```
+
+# Data retrieval
+
+```{r ehub}
+eh <- ExperimentHub()
+query(eh, c("MerfishData", "ileum"))
+```
+
+```{r spe-ileum, message = FALSE}
+spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor",
+                                           use.images = FALSE,
+                                           use.polygons = FALSE)
+spe
+```
+
+Here, we inspect the available basic morphological features from the Baysor 
+segmentation:  
+
+```{r cdat}
+colData(spe)
+```
+
+# Number of transcripts
+
+We stratify the available cell features by cell type, starting with the
+number of transcripts expressed in each cell:
+
+```{r n-transcripts}
+spl <- split(spe$n_transcripts, spe$leiden_final)
+df <- reshape2::melt(spl)
+colnames(df) <- c("n_transcripts", "leiden_final")
+```
+
+We then plot the distribution of number of transcripts by cell type:
+
+```{r n-transcripts-plot, fig.width = 6, fig.height = 6}
+bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "n_transcripts",
+                        fill = "leiden_final", ggtheme = theme_bw(),
+                        palette = "ucscgb", legend = "none")
+bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+From this plot it is apparent that, for example, T (CD8+) cells express more
+transcripts than T (CD4+) cells, which we can corroborate with a simple t-test:
+
+```{r}
+t.test(spl[["T (CD8+)"]], spl[["T (CD4+)"]])
+```
+
+(This is overdispersed count data though):
+
+```{r}
+mean(spl[["T (CD8+)"]])
+var(spl[["T (CD8+)"]])
+length(spl[["T (CD8+)"]])
+```
+
+# Density
+
+```{r n-density}
+spl <- split(spe$density, spe$leiden_final)
+df <- reshape2::melt(spl)
+colnames(df) <- c("density", "leiden_final")
+df <- subset(df, leiden_final != "Removed")
+```
+
+We then plot the distribution of by cell type:
+
+```{r n-density-plot, fig.width = 6, fig.height = 6}
+bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "density",
+                        fill = "leiden_final", ggtheme = theme_bw(),
+                        palette = "ucscgb", legend = "none")
+bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Elongation
+
+```{r n-elong}
+spl <- split(spe$elongation, spe$leiden_final)
+df <- reshape2::melt(spl)
+colnames(df) <- c("elongation", "leiden_final")
+df <- subset(df, leiden_final != "Removed")
+```
+
+We then plot the distribution of by cell type:
+
+```{r n-elong-plot, fig.width = 6, fig.height = 6}
+bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "elongation",
+                        fill = "leiden_final", ggtheme = theme_bw(),
+                        palette = "ucscgb", legend = "none")
+bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Area
+
+```{r n-area}
+spl <- split(spe$area, spe$leiden_final)
+df <- reshape2::melt(spl)
+colnames(df) <- c("area", "leiden_final")
+df <- subset(df, leiden_final != "Removed")
+```
+
+We then plot the distribution of by cell type:
+
+```{r n-area-plot, fig.width = 6, fig.height = 6}
+bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "area",
+                        fill = "leiden_final", ggtheme = theme_bw(),
+                        palette = "ucscgb", legend = "none")
+bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Confidence
+
+```{r n-conf}
+spl <- split(spe$avg_confidence, spe$leiden_final)
+df <- reshape2::melt(spl)
+colnames(df) <- c("avg_confidence", "leiden_final")
+df <- subset(df, leiden_final != "Removed")
+```
+
+We then plot the distribution of by cell type:
+
+```{r n-conf-plot, fig.width = 6, fig.height = 6}
+bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "avg_confidence",
+                        fill = "leiden_final", ggtheme = theme_bw(),
+                        palette = "ucscgb", legend = "none")
+bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```

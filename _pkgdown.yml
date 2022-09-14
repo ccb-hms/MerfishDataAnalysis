@@ -12,8 +12,12 @@ navbar:
   left:
     - text: Vignettes
       menu:
-      - text: MERFISH mouse ileum segmentation
+      - text: Mouse ileum segmentation
         href: articles/segmentation.html
+      - text: Mouse ileum morphological features
+        href: articles/morphology.html
+      - text: Mouse ileum cell interactions
+        href: articles/cell_interactions.html
       
   right:
     - icon: fa-github

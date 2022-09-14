@@ -1,7 +1,7 @@
 ---
-title: MERFISH mouse ileum segmentation
+title: Mouse ileum segmentation
 vignette: >
-  % \VignetteIndexEntry{MERFISH mouse ileum segmentation}
+  % \VignetteIndexEntry{Mouse ileum segmentation}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output:

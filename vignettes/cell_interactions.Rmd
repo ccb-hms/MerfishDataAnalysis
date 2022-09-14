@@ -1,0 +1,32 @@
+---
+title: Mouse ileum cell interactions
+vignette: >
+  % \VignetteIndexEntry{Mouse ileum cell interactions}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    mathjax: null   
+---
+
+# Setup
+
+```{r, message = FALSE}
+library(MerfishData)
+library(ExperimentHub)
+```
+
+# Data retrieval
+
+```{r ehub}
+eh <- ExperimentHub()
+query(eh, c("MerfishData", "ileum"))
+```
+
+```{r spe-ileum, message = FALSE}
+spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor",
+                                           use.images = FALSE,
+                                           use.polygons = FALSE)
+spe
+```
+
