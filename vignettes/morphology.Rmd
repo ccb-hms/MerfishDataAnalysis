@@ -110,6 +110,21 @@ bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "elongation",
 bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+Let's look at this irrespective of cell type annotation and identify
+top 10% cells with highest elongation:
+
+```{r elong-q90}
+q90 <- quantile(df$elongation, 0.9)
+q90
+sum(df$elongation > q90)
+```
+
+```{r, elong-hist, fig.width = 6, fig.height = 6}
+hi <- ggpubr::gghistogram(df, x = "elongation", bins = 30,
+                          fill = "#00AFBB", ggtheme = theme_bw())
+hi + geom_vline(xintercept = q90, color = "red", linetype = "dashed")
+```
+
 # Area
 
 ```{r n-area}
@@ -127,6 +142,22 @@ bp <- ggpubr::ggboxplot(df, x = "leiden_final", y = "area",
                         palette = "ucscgb", legend = "none")
 bp + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+Let's look at this irrespective of cell type annotation and identify
+top 10% cells with highest elongation:
+
+```{r area-q90}
+q90 <- quantile(df$area, 0.9)
+q90
+sum(df$area > q90)
+```
+
+```{r, area-hist, fig.width = 6, fig.height = 6}
+hi <- ggpubr::gghistogram(df, x = "area", bins = 30,
+                          fill = "#00AFBB", ggtheme = theme_bw())
+hi + geom_vline(xintercept = q90, color = "red", linetype = "dashed")
+```
+
 
 # Confidence
 
