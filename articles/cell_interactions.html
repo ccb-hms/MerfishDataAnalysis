@@ -94,6 +94,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ccb-hms/MerfishData" class="external-link">MerfishData</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/BodenmillerGroup/imcRtools" class="external-link">imcRtools</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -146,6 +147,17 @@
 <div class="section level2">
 <h2 id="spatial-proximity-analysis">Spatial proximity analysis<a class="anchor" aria-label="anchor" href="#spatial-proximity-analysis"></a>
 </h2>
+<div class="section level3">
+<h3 id="construct-spatial-graph">Construct spatial graph<a class="anchor" aria-label="anchor" href="#construct-spatial-graph"></a>
+</h3>
+<p>To identify cells that are in close proximity to each other, we use
+the <code>buildSpatialGraph</code> function from the <a href="https://bioconductor.org/packages/imcRtools" class="external-link">imcRtools</a>
+package. The function constructs interaction graphs using either (i)
+cell-centroid expansion, (ii) <em>k</em>-nearest neighbor search, or
+(iii) delaunay triangulation.</p>
+<p>Here, we use a k-nearest neighbor search with k = 5, which
+accordingly constructs a graph based on the 5 closest cells for each
+cell.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">imcRtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/imcRtools/man/buildSpatialGraph.html" class="external-link">buildSpatialGraph</a></span><span class="op">(</span><span class="va">spe</span>,</span>
 <span>                                    img_id <span class="op">=</span> <span class="st">"sample_id"</span>,</span>
@@ -156,7 +168,7 @@
 <pre><code><span><span class="co">## List of length 1</span></span>
 <span><span class="co">## names(1): knn_interaction_graph</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">colPairs</span><span class="op">(</span><span class="va">spe</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">colPair</span><span class="op">(</span><span class="va">spe</span>, <span class="st">"knn_interaction_graph"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## SelfHits object with 29000 hits and 0 metadata columns:</span></span>
 <span><span class="co">##                from        to</span></span>
 <span><span class="co">##           &lt;integer&gt; &lt;integer&gt;</span></span>
@@ -173,87 +185,153 @@
 <span><span class="co">##   [29000]      5800      5780</span></span>
 <span><span class="co">##   -------</span></span>
 <span><span class="co">##   nnode: 5800</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="neighborhood-permutation-testing">Neighborhood permutation testing<a class="anchor" aria-label="anchor" href="#neighborhood-permutation-testing"></a>
+</h3>
+<p>To identify recurrent interactions between cell type labels, we use
+the <code>countInteractions</code> and <code>testInteractions</code>
+functions from the <a href="https://bioconductor.org/packages/imcRtools" class="external-link">imcRtools</a>
+package.</p>
+<p>The <code>countInteractions</code> function counts the number of
+edges (interactions) between each pair of cell labels. Simplified, it
+counts for each cell of type A the number of neighbors of type B.</p>
+<p>This count can be averaged within each grouping level
+(e.g. image/sample) in different ways. Here, we use
+<code>method = "classic"</code> to divide the interaction count is
+divided by the total number of cells of type A. The final count can be
+interpreted as “How many neighbors of type B does a cell of type A have
+on average?”.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ia.counts</span> <span class="op">&lt;-</span> <span class="fu">imcRtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/imcRtools/man/countInteractions.html" class="external-link">countInteractions</a></span><span class="op">(</span><span class="va">spe</span>,</span>
 <span>                                          group_by <span class="op">=</span> <span class="st">"sample_id"</span>,</span>
 <span>                                          label <span class="op">=</span> <span class="st">"leiden_final"</span>,</span>
 <span>                                          colPairName <span class="op">=</span> <span class="st">"knn_interaction_graph"</span>,</span>
 <span>                                          method <span class="op">=</span> <span class="st">"classic"</span><span class="op">)</span></span>
+<span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">ia.counts</span><span class="op">$</span><span class="va">ct</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">ia.counts</span> <span class="op">&lt;-</span> <span class="va">ia.counts</span><span class="op">[</span><span class="va">ind</span>,<span class="op">]</span></span>
 <span><span class="va">ia.counts</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 400 rows and 4 columns</span></span>
-<span><span class="co">##        group_by                  from_label                    to_label</span></span>
-<span><span class="co">##     &lt;character&gt;                    &lt;factor&gt;                    &lt;factor&gt;</span></span>
-<span><span class="co">## 1         ileum B (Follicular, Circulating) B (Follicular, Circulating)</span></span>
-<span><span class="co">## 2         ileum B (Follicular, Circulating) B (Plasma)                 </span></span>
-<span><span class="co">## 3         ileum B (Follicular, Circulating) Endothelial                </span></span>
-<span><span class="co">## 4         ileum B (Follicular, Circulating) Enterocyte (Bottom Villus) </span></span>
-<span><span class="co">## 5         ileum B (Follicular, Circulating) Enterocyte (Mid Villus)    </span></span>
-<span><span class="co">## ...         ...                         ...                         ...</span></span>
-<span><span class="co">## 396       ileum                        Tuft                    Stromal </span></span>
-<span><span class="co">## 397       ileum                        Tuft                    T (CD4+)</span></span>
-<span><span class="co">## 398       ileum                        Tuft                    T (CD8+)</span></span>
-<span><span class="co">## 399       ileum                        Tuft                    Telocyte</span></span>
-<span><span class="co">## 400       ileum                        Tuft                    Tuft    </span></span>
-<span><span class="co">##            ct</span></span>
-<span><span class="co">##     &lt;numeric&gt;</span></span>
-<span><span class="co">## 1     1.59375</span></span>
-<span><span class="co">## 2     0.25000</span></span>
-<span><span class="co">## 3     0.46875</span></span>
-<span><span class="co">## 4     0.00000</span></span>
-<span><span class="co">## 5     0.00000</span></span>
-<span><span class="co">## ...       ...</span></span>
-<span><span class="co">## 396 0.0555556</span></span>
-<span><span class="co">## 397 0.0000000</span></span>
-<span><span class="co">## 398 0.0000000</span></span>
-<span><span class="co">## 399 0.0000000</span></span>
-<span><span class="co">## 400 0.5555556</span></span></code></pre>
+<span><span class="co">##        group_by              from_label                to_label        ct</span></span>
+<span><span class="co">##     &lt;character&gt;                &lt;factor&gt;                &lt;factor&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1         ileum Enterocyte (Mid Villus) Enterocyte (Mid Villus)   3.27532</span></span>
+<span><span class="co">## 2         ileum Enterocyte (Top Villus) Enterocyte (Top Villus)   3.19375</span></span>
+<span><span class="co">## 3         ileum Smooth Muscle           Smooth Muscle             3.07243</span></span>
+<span><span class="co">## 4         ileum Paneth                  Paneth                    3.05183</span></span>
+<span><span class="co">## 5         ileum Myenteric Plexus        Myenteric Plexus          3.03226</span></span>
+<span><span class="co">## ...         ...                     ...                     ...       ...</span></span>
+<span><span class="co">## 396       ileum                    Tuft           Pericyte              0</span></span>
+<span><span class="co">## 397       ileum                    Tuft           Smooth Muscle         0</span></span>
+<span><span class="co">## 398       ileum                    Tuft           T (CD4+)              0</span></span>
+<span><span class="co">## 399       ileum                    Tuft           T (CD8+)              0</span></span>
+<span><span class="co">## 400       ileum                    Tuft           Telocyte              0</span></span></code></pre>
+<p>Given these average interaction counts between cell type labels, we
+can then test if the obtained count is larger or smaller compared to
+what is expected from a random distribution of cell labels.</p>
+<p>For this, we use the <code>testInteractions</code> function from the
+<a href="https://bioconductor.org/packages/imcRtools" class="external-link">imcRtools</a>
+package, which permutes the cell labels and counts interactions as
+described above. This approach generates a distribution of the
+interaction count under a random distribution of cell labels. The
+observed interaction count is compared against this null distribution to
+derive empirical p-values:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ia.sig</span> <span class="op">&lt;-</span> <span class="fu">imcRtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/imcRtools/man/testInteractions.html" class="external-link">testInteractions</a></span><span class="op">(</span><span class="va">spe</span>,</span>
 <span>                                      group_by <span class="op">=</span> <span class="st">"sample_id"</span>,</span>
 <span>                                      label <span class="op">=</span> <span class="st">"leiden_final"</span>,</span>
 <span>                                      colPairName <span class="op">=</span> <span class="st">"knn_interaction_graph"</span>,</span>
 <span>                                      method <span class="op">=</span> <span class="st">"classic"</span><span class="op">)</span></span>
+<span><span class="va">sort.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">ia.sig</span><span class="op">$</span><span class="va">p</span>, ct <span class="op">=</span> <span class="op">-</span><span class="va">ia.sig</span><span class="op">$</span><span class="va">ct</span><span class="op">)</span></span>
+<span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">order</span>, <span class="va">sort.df</span><span class="op">)</span></span>
+<span><span class="va">ia.sig</span> <span class="op">&lt;-</span> <span class="va">ia.sig</span><span class="op">[</span><span class="va">ind</span>,<span class="op">]</span></span>
 <span><span class="va">ia.sig</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 400 rows and 10 columns</span></span>
-<span><span class="co">##        group_by                  from_label                    to_label</span></span>
-<span><span class="co">##     &lt;character&gt;                    &lt;factor&gt;                    &lt;factor&gt;</span></span>
-<span><span class="co">## 1         ileum B (Follicular, Circulating) B (Follicular, Circulating)</span></span>
-<span><span class="co">## 2         ileum B (Follicular, Circulating) B (Plasma)                 </span></span>
-<span><span class="co">## 3         ileum B (Follicular, Circulating) Endothelial                </span></span>
-<span><span class="co">## 4         ileum B (Follicular, Circulating) Enterocyte (Bottom Villus) </span></span>
-<span><span class="co">## 5         ileum B (Follicular, Circulating) Enterocyte (Mid Villus)    </span></span>
-<span><span class="co">## ...         ...                         ...                         ...</span></span>
-<span><span class="co">## 396       ileum                        Tuft                    Stromal </span></span>
-<span><span class="co">## 397       ileum                        Tuft                    T (CD4+)</span></span>
-<span><span class="co">## 398       ileum                        Tuft                    T (CD8+)</span></span>
-<span><span class="co">## 399       ileum                        Tuft                    Telocyte</span></span>
-<span><span class="co">## 400       ileum                        Tuft                    Tuft    </span></span>
-<span><span class="co">##            ct        p_gt        p_lt interaction           p       sig</span></span>
-<span><span class="co">##     &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;   &lt;logical&gt;   &lt;numeric&gt; &lt;logical&gt;</span></span>
-<span><span class="co">## 1     1.59375 0.000999001 1.000000000        TRUE 0.000999001      TRUE</span></span>
-<span><span class="co">## 2     0.25000 0.969030969 0.059940060       FALSE 0.059940060     FALSE</span></span>
-<span><span class="co">## 3     0.46875 0.002997003 0.999000999        TRUE 0.002997003      TRUE</span></span>
-<span><span class="co">## 4     0.00000 1.000000000 0.000999001       FALSE 0.000999001      TRUE</span></span>
-<span><span class="co">## 5     0.00000 1.000000000 0.000999001       FALSE 0.000999001      TRUE</span></span>
-<span><span class="co">## ...       ...         ...         ...         ...         ...       ...</span></span>
-<span><span class="co">## 396 0.0555556 0.999000999    0.002997       FALSE 0.002997003      TRUE</span></span>
-<span><span class="co">## 397 0.0000000 1.000000000    0.040959       FALSE 0.040959041     FALSE</span></span>
-<span><span class="co">## 398 0.0000000 1.000000000    0.127872       FALSE 0.127872128     FALSE</span></span>
-<span><span class="co">## 399 0.0000000 1.000000000    0.176823       FALSE 0.176823177     FALSE</span></span>
-<span><span class="co">## 400 0.5555556 0.000999001    1.000000        TRUE 0.000999001      TRUE</span></span>
-<span><span class="co">##        sigval</span></span>
-<span><span class="co">##     &lt;numeric&gt;</span></span>
-<span><span class="co">## 1           1</span></span>
-<span><span class="co">## 2           0</span></span>
-<span><span class="co">## 3           1</span></span>
-<span><span class="co">## 4          -1</span></span>
-<span><span class="co">## 5          -1</span></span>
-<span><span class="co">## ...       ...</span></span>
-<span><span class="co">## 396        -1</span></span>
-<span><span class="co">## 397         0</span></span>
-<span><span class="co">## 398         0</span></span>
-<span><span class="co">## 399         0</span></span>
-<span><span class="co">## 400         1</span></span></code></pre>
+<span><span class="co">##        group_by              from_label                to_label        ct</span></span>
+<span><span class="co">##     &lt;character&gt;                &lt;factor&gt;                &lt;factor&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1         ileum Enterocyte (Mid Villus) Enterocyte (Mid Villus)   3.27532</span></span>
+<span><span class="co">## 2         ileum Enterocyte (Top Villus) Enterocyte (Top Villus)   3.19375</span></span>
+<span><span class="co">## 3         ileum Smooth Muscle           Smooth Muscle             3.07243</span></span>
+<span><span class="co">## 4         ileum Paneth                  Paneth                    3.05183</span></span>
+<span><span class="co">## 5         ileum Myenteric Plexus        Myenteric Plexus          3.03226</span></span>
+<span><span class="co">## ...         ...                     ...                     ...       ...</span></span>
+<span><span class="co">## 396       ileum        Telocyte                Myenteric Plexus  0.026087</span></span>
+<span><span class="co">## 397       ileum        Tuft                    Myenteric Plexus  0.000000</span></span>
+<span><span class="co">## 398       ileum        Myenteric Plexus        Tuft              0.000000</span></span>
+<span><span class="co">## 399       ileum        Tuft                    ICC               0.000000</span></span>
+<span><span class="co">## 400       ileum        ICC                     Tuft              0.000000</span></span>
+<span><span class="co">##            p_gt      p_lt interaction           p       sig    sigval</span></span>
+<span><span class="co">##       &lt;numeric&gt; &lt;numeric&gt;   &lt;logical&gt;   &lt;numeric&gt; &lt;logical&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 2   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 3   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 4   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 5   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## ...         ...       ...         ...         ...       ...       ...</span></span>
+<span><span class="co">## 396    0.614386  0.631369        TRUE    0.614386     FALSE         0</span></span>
+<span><span class="co">## 397    1.000000  0.623377       FALSE    0.623377     FALSE         0</span></span>
+<span><span class="co">## 398    1.000000  0.630370       FALSE    0.630370     FALSE         0</span></span>
+<span><span class="co">## 399    1.000000  0.653347       FALSE    0.653347     FALSE         0</span></span>
+<span><span class="co">## 400    1.000000  0.660340       FALSE    0.660340     FALSE         0</span></span></code></pre>
+<p>This seem to primarily work out that cells of the same type tend to
+be close to each other, which is also apparent from spatial domain
+organization in the image.</p>
+<p>Which cells of different cell types tend to be disproportionately
+often close to each other?</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="va">ia.sig</span><span class="op">$</span><span class="va">from_label</span> <span class="op">!=</span> <span class="va">ia.sig</span><span class="op">$</span><span class="va">to_label</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ia.sig</span><span class="op">[</span><span class="va">ind</span>,<span class="op">]</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 10 rows and 10 columns</span></span>
+<span><span class="co">##       group_by                  from_label                to_label        ct</span></span>
+<span><span class="co">##    &lt;character&gt;                    &lt;factor&gt;                &lt;factor&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1        ileum ICC                         Smooth Muscle            2.612903</span></span>
+<span><span class="co">## 2        ileum Goblet                      Enterocyte (Mid Villus)  1.545151</span></span>
+<span><span class="co">## 3        ileum Tuft                        Enterocyte (Mid Villus)  1.444444</span></span>
+<span><span class="co">## 4        ileum B (Follicular, Circulating) Stromal                  1.343750</span></span>
+<span><span class="co">## 5        ileum Macrophage + DC             B (Plasma)               1.007026</span></span>
+<span><span class="co">## 6        ileum Telocyte                    Smooth Muscle            0.982609</span></span>
+<span><span class="co">## 7        ileum T (CD8+)                    Enterocyte (Mid Villus)  0.960000</span></span>
+<span><span class="co">## 8        ileum B (Plasma)                  Macrophage + DC          0.938492</span></span>
+<span><span class="co">## 9        ileum T (CD4+)                    B (Plasma)               0.857868</span></span>
+<span><span class="co">## 10       ileum Goblet                      Stem + TA                0.836120</span></span>
+<span><span class="co">##           p_gt      p_lt interaction           p       sig    sigval</span></span>
+<span><span class="co">##      &lt;numeric&gt; &lt;numeric&gt;   &lt;logical&gt;   &lt;numeric&gt; &lt;logical&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 2  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 3  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 4  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 5  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 6  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 7  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 8  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 9  0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
+<span><span class="co">## 10 0.000999001         1        TRUE 0.000999001      TRUE         1</span></span></code></pre>
+<p>Let’s also visualize the pairwise interaction counts between cell
+type labels:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ia.sig</span>, <span class="va">ct</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">df</span><span class="op">$</span><span class="va">sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">sig</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df</span><span class="op">$</span><span class="va">nlogp</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<p>Here we only look at whether an interaction count surpassed a
+signficance threshold of 0.01.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">from_label</span>, y <span class="op">=</span> <span class="va">to_label</span>, size <span class="op">=</span> <span class="va">ct</span>, color <span class="op">=</span> <span class="va">sig</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"from"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"to"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="cell_interactions_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+<p>Here we also look at the magnitude of the effect.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">from_label</span>, y <span class="op">=</span> <span class="va">to_label</span>, size <span class="op">=</span> <span class="va">ct</span>, color <span class="op">=</span> <span class="va">nlogp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"from"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"to"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="cell_interactions_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="ligand-receptor-co-expression-analysis">Ligand-receptor co-expression analysis<a class="anchor" aria-label="anchor" href="#ligand-receptor-co-expression-analysis"></a>
