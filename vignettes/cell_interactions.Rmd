@@ -14,6 +14,7 @@ output:
 ```{r, message = FALSE, warning = FALSE}
 library(MerfishData)
 library(ExperimentHub)
+library(ggplot2)
 library(imcRtools)
 ```
 
@@ -33,6 +34,17 @@ spe
 
 # Spatial proximity analysis
 
+## Construct spatial graph 
+
+To identify cells that are in close proximity to each other, we use the
+`buildSpatialGraph` function from the
+[imcRtools](https://bioconductor.org/packages/imcRtools) package.
+The function constructs interaction graphs using either (i) cell-centroid expansion,
+(ii) _k_-nearest neighbor search, or (iii) delaunay triangulation.
+
+Here, we use a k-nearest neighbor search with k = 5, which accordingly constructs
+a graph based on the 5 closest cells for each cell.
+
 ```{r}
 spe <- imcRtools::buildSpatialGraph(spe,
                                     img_id = "sample_id",
@@ -40,9 +52,23 @@ spe <- imcRtools::buildSpatialGraph(spe,
                                     k = 5, 
                                     coords = c("x", "y")) 
 colPairs(spe)
-colPairs(spe)[[1]]
+colPair(spe, "knn_interaction_graph")
 ```
 
+## Neighborhood permutation testing
+
+To identify recurrent interactions between cell type labels, we use the
+`countInteractions` and `testInteractions` functions from the
+[imcRtools](https://bioconductor.org/packages/imcRtools) package.
+
+The `countInteractions` function counts the number of edges (interactions)
+between each pair of cell labels.
+Simplified, it counts for each cell of type A the number of neighbors of type B.
+
+This count can be averaged within each grouping level (e.g. image/sample) in different ways.
+Here, we use `method = "classic"` to divide the interaction count is divided by
+the total number of cells of type A. The final count can be interpreted as
+"How many neighbors of type B does a cell of type A have on average?". 
 
 ```{r}
 ia.counts <- imcRtools::countInteractions(spe,
@@ -50,8 +76,22 @@ ia.counts <- imcRtools::countInteractions(spe,
                                           label = "leiden_final",
                                           colPairName = "knn_interaction_graph",
                                           method = "classic")
+ind <- order(ia.counts$ct, decreasing = TRUE)
+ia.counts <- ia.counts[ind,]
 ia.counts
 ```
+
+Given these average interaction counts between cell type labels, we can then test
+if the obtained count is larger or smaller compared to what is expected from a
+random distribution of cell labels. 
+
+For this, we use the `testInteractions` function from the 
+[imcRtools](https://bioconductor.org/packages/imcRtools) package, which permutes
+the cell labels and counts interactions as described above. 
+This approach generates a distribution of the interaction count under a random
+distribution of cell labels. 
+The observed interaction count is compared against this null distribution to
+derive empirical p-values:
 
 ```{r}
 ia.sig <- imcRtools::testInteractions(spe,
@@ -59,7 +99,53 @@ ia.sig <- imcRtools::testInteractions(spe,
                                       label = "leiden_final",
                                       colPairName = "knn_interaction_graph",
                                       method = "classic")
+sort.df <- data.frame(p = ia.sig$p, ct = -ia.sig$ct)
+ind <- do.call(order, sort.df)
+ia.sig <- ia.sig[ind,]
 ia.sig
+```
+
+This seem to primarily work out that cells of the same type tend to be close to
+each other, which is also apparent from spatial domain organization in the image.
+
+Which cells of different cell types tend to be disproportionately often close to
+each other?
+
+```{r}
+ind <- ia.sig$from_label != ia.sig$to_label
+head(ia.sig[ind,], n = 10)
+```
+
+Let's also visualize the pairwise interaction counts between cell type labels:
+
+```{r}
+df <- subset(ia.sig, ct > 0)
+df <- data.frame(df)
+df$sig <- factor(df$sig, levels = c(TRUE, FALSE))
+df$nlogp <- -log10(df$p)
+```
+
+Here we only look at whether an interaction count surpassed a signficance threshold
+of 0.01.
+
+```{r, fig.width = 10, fig.height = 10}
+ggplot(df, aes(x = from_label, y = to_label, size = ct, color = sig)) + 
+    geom_point() +
+    xlab("from") + 
+    ylab("to") + 
+    theme_bw() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Here we also look at the magnitude of the effect.
+
+```{r, fig.width = 10, fig.height = 10}
+ggplot(df, aes(x = from_label, y = to_label, size = ct, color = nlogp)) + 
+    geom_point() + 
+    xlab("from") + 
+    ylab("to") + 
+    theme_bw() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 # Ligand-receptor co-expression analysis
