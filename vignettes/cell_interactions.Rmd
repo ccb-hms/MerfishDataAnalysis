@@ -14,6 +14,7 @@ output:
 ```{r, message = FALSE, warning = FALSE}
 library(MerfishData)
 library(ExperimentHub)
+library(imcRtools)
 ```
 
 # Data retrieval
@@ -30,3 +31,37 @@ spe <- MerfishData::MouseIleumPetukhov2021(segmentation = "baysor",
 spe
 ```
 
+# Spatial proximity analysis
+
+```{r}
+spe <- imcRtools::buildSpatialGraph(spe,
+                                    img_id = "sample_id",
+                                    type = "knn",
+                                    k = 5, 
+                                    coords = c("x", "y")) 
+colPairs(spe)
+colPairs(spe)[[1]]
+```
+
+
+```{r}
+ia.counts <- imcRtools::countInteractions(spe,
+                                          group_by = "sample_id",
+                                          label = "leiden_final",
+                                          colPairName = "knn_interaction_graph",
+                                          method = "classic")
+ia.counts
+```
+
+```{r}
+ia.sig <- imcRtools::testInteractions(spe,
+                                      group_by = "sample_id",
+                                      label = "leiden_final",
+                                      colPairName = "knn_interaction_graph",
+                                      method = "classic")
+ia.sig
+```
+
+# Ligand-receptor co-expression analysis
+
+# Ligand-target co-expression analysis

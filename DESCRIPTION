@@ -22,6 +22,7 @@ Suggests:
     sp,
     ggplot2,
     ggpubr,
+    imcRtools,
     knitr,
     reshape2,
     rmarkdown,

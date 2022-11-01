@@ -119,7 +119,7 @@ q90
 sum(df$elongation > q90)
 ```
 
-```{r, elong-hist, fig.width = 6, fig.height = 6}
+```{r elong-hist, fig.width = 6, fig.height = 6}
 hi <- ggpubr::gghistogram(df, x = "elongation", bins = 30,
                           fill = "#00AFBB", ggtheme = theme_bw())
 hi + geom_vline(xintercept = q90, color = "red", linetype = "dashed")
@@ -152,12 +152,11 @@ q90
 sum(df$area > q90)
 ```
 
-```{r, area-hist, fig.width = 6, fig.height = 6}
+```{r area-hist, fig.width = 6, fig.height = 6}
 hi <- ggpubr::gghistogram(df, x = "area", bins = 30,
                           fill = "#00AFBB", ggtheme = theme_bw())
 hi + geom_vline(xintercept = q90, color = "red", linetype = "dashed")
 ```
-
 
 # Confidence
 
