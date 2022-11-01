@@ -37,6 +37,7 @@ vignettes/*.pdf
 *.knit.md
 *.log
 *.pdb
+*.swp
 
 # R Environment Variables
 .Renviron
