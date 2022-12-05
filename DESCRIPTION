@@ -31,4 +31,5 @@ Suggests:
     ExperimentHub,
     MerfishData
 Remotes:
-    ccb-hms/MerfishData
+    ccb-hms/MerfishData,
+    BodenmillerGroup/imcRtools
