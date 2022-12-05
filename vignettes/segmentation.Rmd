@@ -14,6 +14,7 @@ output:
 ```{r, message = FALSE, warning = FALSE}
 library(MerfishData)
 library(ExperimentHub)
+library(alphahull)
 library(ggplot2)
 library(sp)
 ```
@@ -179,4 +180,57 @@ p <- ggplot() + geom_polygon(data = clc,
                         aes(x = x, y = y, group = cell, color = leiden),
                         fill = NA)
 p + theme_bw()
+```
+
+# Alpha-convex hull segmentation borders
+
+Although convex hulls are useful for simple approximation of cell shapes given
+the entirety of molecules annotated to a cell, there might also be concave 
+(inward curving) elements to a cell shape.
+
+Using the concept of an $\alpha$-convex hull as implemented in the 
+[alphahull](https://cran.r-project.org/package=alphahull)
+package, we are also able to reconstruct non-convex hulls from the spatial
+location of each molecule annotated to a cell.
+
+An important parameter is the shape parameter $\alpha$, which describes determines
+the degree of inward curving, where the larger the $\alpha$, the more the hull
+approaches a convex hull. 
+
+Here we inspect the effect of varying $\alpha$ for the first five cells of the ileum
+dataset:
+
+```{r, fig.width = 10, fig.height = 10}
+cl <- lapply(cl, unique)
+par(mfrow = c(5,5))
+par(pch = 20)
+cols <- rainbow(8)
+for(i in 1:5)
+{
+    for(a in seq(5, 25, by = 5))
+    {
+        main <- ""
+        if(i == 1) main <- paste("alpha", a, sep = " = ")
+        res <- alphahull::ahull(cl[[i]], alpha = a)
+        plot(res, xlab = "x", ylab = "y", col = cols[i], main = main)
+    }
+}
+```
+
+For demonstration purpose, we compute here $\alpha$-hull for the first 8 cells
+with $\alpha$ set to 20.
+
+```{r}
+ahl <- lapply(cl[1:8], alphahull::ahull, alpha = 20)
+```
+
+Plot:
+
+```{r, fig.width = 8, fig.height = 8}
+par(mfrow = c(1,1)) 
+plot(ahl[[1]], col = cols[1],
+     xlim = c(2000,2300), ylim = c(0,250),
+     xlab = "x", ylab = "y")
+for(i in 2:8)
+    plot(ahl[[i]], col = cols[i], add = TRUE)
 ```
