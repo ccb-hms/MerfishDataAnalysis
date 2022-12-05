@@ -102,11 +102,11 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## snapshotDate(): 2022-10-24</span></span></code></pre>
+<pre><code><span><span class="co">## snapshotDate(): 2022-11-29</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MerfishData"</span>, <span class="st">"ileum"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ExperimentHub with 9 records</span></span>
-<span><span class="co">## # snapshotDate(): 2022-10-24</span></span>
+<span><span class="co">## # snapshotDate(): 2022-11-29</span></span>
 <span><span class="co">## # $dataprovider: Boston Children's Hospital</span></span>
 <span><span class="co">## # $species: Mus musculus</span></span>
 <span><span class="co">## # $rdataclass: data.frame, matrix, EBImage</span></span>
@@ -246,19 +246,19 @@ derive empirical p-values:</p>
 <span><span class="va">ia.sig</span> <span class="op">&lt;-</span> <span class="va">ia.sig</span><span class="op">[</span><span class="va">ind</span>,<span class="op">]</span></span>
 <span><span class="va">ia.sig</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 400 rows and 10 columns</span></span>
-<span><span class="co">##        group_by              from_label                to_label        ct</span></span>
-<span><span class="co">##     &lt;character&gt;                &lt;factor&gt;                &lt;factor&gt; &lt;numeric&gt;</span></span>
-<span><span class="co">## 1         ileum Enterocyte (Mid Villus) Enterocyte (Mid Villus)   3.27532</span></span>
-<span><span class="co">## 2         ileum Enterocyte (Top Villus) Enterocyte (Top Villus)   3.19375</span></span>
-<span><span class="co">## 3         ileum Smooth Muscle           Smooth Muscle             3.07243</span></span>
-<span><span class="co">## 4         ileum Paneth                  Paneth                    3.05183</span></span>
-<span><span class="co">## 5         ileum Myenteric Plexus        Myenteric Plexus          3.03226</span></span>
-<span><span class="co">## ...         ...                     ...                     ...       ...</span></span>
-<span><span class="co">## 396       ileum        Telocyte                Myenteric Plexus  0.026087</span></span>
-<span><span class="co">## 397       ileum        Tuft                    Myenteric Plexus  0.000000</span></span>
-<span><span class="co">## 398       ileum        Myenteric Plexus        Tuft              0.000000</span></span>
-<span><span class="co">## 399       ileum        Tuft                    ICC               0.000000</span></span>
-<span><span class="co">## 400       ileum        ICC                     Tuft              0.000000</span></span>
+<span><span class="co">##        group_by              from_label                    to_label        ct</span></span>
+<span><span class="co">##     &lt;character&gt;                &lt;factor&gt;                    &lt;factor&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## 1         ileum Enterocyte (Mid Villus)     Enterocyte (Mid Villus)   3.27532</span></span>
+<span><span class="co">## 2         ileum Enterocyte (Top Villus)     Enterocyte (Top Villus)   3.19375</span></span>
+<span><span class="co">## 3         ileum Smooth Muscle               Smooth Muscle             3.07243</span></span>
+<span><span class="co">## 4         ileum Paneth                      Paneth                    3.05183</span></span>
+<span><span class="co">## 5         ileum Myenteric Plexus            Myenteric Plexus          3.03226</span></span>
+<span><span class="co">## ...         ...                     ...                         ...       ...</span></span>
+<span><span class="co">## 396       ileum        Tuft             B (Follicular, Circulating)         0</span></span>
+<span><span class="co">## 397       ileum        Tuft             ICC                                 0</span></span>
+<span><span class="co">## 398       ileum        ICC              Tuft                                0</span></span>
+<span><span class="co">## 399       ileum        Myenteric Plexus Tuft                                0</span></span>
+<span><span class="co">## 400       ileum        Tuft             Myenteric Plexus                    0</span></span>
 <span><span class="co">##            p_gt      p_lt interaction           p       sig    sigval</span></span>
 <span><span class="co">##       &lt;numeric&gt; &lt;numeric&gt;   &lt;logical&gt;   &lt;numeric&gt; &lt;logical&gt; &lt;numeric&gt;</span></span>
 <span><span class="co">## 1   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
@@ -267,11 +267,11 @@ derive empirical p-values:</p>
 <span><span class="co">## 4   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
 <span><span class="co">## 5   0.000999001         1        TRUE 0.000999001      TRUE         1</span></span>
 <span><span class="co">## ...         ...       ...         ...         ...       ...       ...</span></span>
-<span><span class="co">## 396    0.614386  0.631369        TRUE    0.614386     FALSE         0</span></span>
-<span><span class="co">## 397    1.000000  0.623377       FALSE    0.623377     FALSE         0</span></span>
-<span><span class="co">## 398    1.000000  0.630370       FALSE    0.630370     FALSE         0</span></span>
-<span><span class="co">## 399    1.000000  0.653347       FALSE    0.653347     FALSE         0</span></span>
-<span><span class="co">## 400    1.000000  0.660340       FALSE    0.660340     FALSE         0</span></span></code></pre>
+<span><span class="co">## 396           1  0.609391       FALSE    0.609391     FALSE         0</span></span>
+<span><span class="co">## 397           1  0.630370       FALSE    0.630370     FALSE         0</span></span>
+<span><span class="co">## 398           1  0.632368       FALSE    0.632368     FALSE         0</span></span>
+<span><span class="co">## 399           1  0.638362       FALSE    0.638362     FALSE         0</span></span>
+<span><span class="co">## 400           1  0.639361       FALSE    0.639361     FALSE         0</span></span></code></pre>
 <p>This seem to primarily work out that cells of the same type tend to
 be close to each other, which is also apparent from spatial domain
 organization in the image.</p>
